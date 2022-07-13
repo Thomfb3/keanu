@@ -117,6 +117,18 @@ class Matrix {
     }
 
     //// MATRIX TRAVERSAL
+    straightTraverse() {
+        if (!this.grid.length) return [];
+        const result = [];
+        for (let row = 0; row < this.grid.length; row++) {
+            for (let col = 0; col < this.grid[0].length; col++) {
+                result.push(this.grid[row][col]);
+            }
+        }
+        return result;
+    }
+
+
     spiralTraverse() {
         if (!this.grid.length) return [];
         const result = [];
@@ -151,6 +163,7 @@ class Matrix {
     }
 
     zigzagTraverse() {
+        if (!this.grid.length) return [];
         const result = [];
         let row = 0;
         let col = 0;

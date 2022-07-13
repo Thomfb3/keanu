@@ -181,6 +181,38 @@ describe("Matrix", function () {
         expect(console.error).toHaveBeenCalled();
       });
     });
+    
+    describe("straightTraverse: Traverse through Matrix in order", function () {
+      const matrix = new Matrix();
+      matrix.createFromSequence(3, 3, 1, 9)
+      let straight = matrix.straightTraverse();
+      let straightExpected = [1,2,3,4,5,6,7,8,9];
+
+      let grid = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]
+      ];
+
+      const matrixTwo = new Matrix();
+      matrixTwo.createFromGrid(grid)
+      let matrixFromGrid = matrixTwo.straightTraverse()
+      let matrixFromGridExpected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+
+      const empty = new Matrix();
+      let emptyExpected = empty.spiralTraverse();
+
+      it("straightTraverse: with small grid from sequence", function () {
+        expect(straight).toEqual(straightExpected);
+      });
+      it("straightTraverse: with bigger grid from grid", function () {
+        expect(matrixFromGrid).toEqual(matrixFromGridExpected);
+      });
+      it("straightTraverse: wiht empty array", function () {
+        expect(emptyExpected).toEqual([]);
+      });
+    });
 
     describe("spiralTraverse: Traverse through Matrix in spiral", function () {
       const matrix = new Matrix();
@@ -218,11 +250,7 @@ describe("Matrix", function () {
       const matrix = new Matrix();
       matrix.createFromSequence(3, 3, 1, 9)
       let zigzag = matrix.zigzagTraverse();
-      // [1,2,3]
-      // [4,5,6]
-      // [7,8,9]
       let zigzagExpected = [1, 4, 2, 3, 5, 7, 8, 6, 9];
-
 
       let grid = [
         [1, 3, 4, 10],
