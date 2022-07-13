@@ -1,10 +1,8 @@
-class MatrixException extends Error {
+class MatrixError extends Error {
     constructor(message) {
         super(message);
-        this.name = 'MatrixException';
-        this.error = new Error(this.message);
-        return this.error;
-    } 
+        this.name = 'MatrixError';
+    }
 }
 
 class Matrix {
@@ -17,9 +15,10 @@ class Matrix {
         this._createGrid();
     }
 
+    //// MATRIX UTILITIES
     _createGrid() {
-        for (let x = 0; x < this.rows; x++) {
-            this.grid[x] = new Array(this.columns).fill(this.filler);
+        for (let row = 0; row < this.rows; row++) {
+            this.grid[row] = new Array(this.columns).fill(this.filler);
         }
     }
 
@@ -27,41 +26,48 @@ class Matrix {
         if (newValue !== undefined) {
             return true;
         } else {
-            throw new MatrixException("No argument provided for value");
+            throw new MatrixError("No argument provided for value");
         }
     }
 
-    _isInBounds(x, y) {
-        if (x >= 0 && y >= 0 && x < this.rows && y < this.columns) {
+    _isInBounds(row, col) {
+        if (row >= 0 && col >= 0 && row < this.rows && col < this.columns) {
             return true;
         } else {
-            throw new MatrixException(`Coordinates ${x}-${y} out of bounds`);
+            throw new MatrixError("Coordinates are out of bounds");
         }
     }
 
-    changeGridPointValue(x, y, newValue) {
-        try {
-            if (this._notEmptyValue(newValue)) {
-                if (this._isInBounds(x, y)) { this.grid[x][y] = newValue; }
-            }
-        } catch (e) {
-            console.error(e);
+    _rowInBounds(row) {
+        if (row >= 0 && row < this.rows) {
+            return true;
+        } else {
+            throw new MatrixError("Row is out of bounds");
         }
     }
 
-    changeGridRowValue(x, newValue) {
-        this.grid[x].forEach((el, idx) => this.changeGridPointValue(x, idx, newValue));
+    _columnInBounds(col) {
+        if (col >= 0 && col < this.columns) {
+            return true;
+        } else {
+            throw new MatrixError("Column is out of bounds");
+        }
     }
 
-    changeGridColumnValue(y, newValue) {
-        this.grid.forEach((el, idx) => this.changeGridPointValue(idx, y, newValue));
+    _isOutOfBounds(row, col) {
+        return row < 0 || row > this.rows - 1 || col < 0 || col > this.columns - 1;
     }
 
+    //// MATRIX CHANGES
     createFromGrid(grid) {
-        for (let x = 0; x < grid.length; x++) {
+        if (!Array.isArray(grid) || !Array.isArray(grid[0])) return;
+        this.rows = grid.length;
+        this.columns = grid[0].length;
+
+        for (let row = 0; row < grid.length; row++) {
             this.grid.push(new Array());
-            for (let y = 0; y < grid[y].length; y++) {
-                this.grid[x].push(grid[x][y]);
+            for (let col = 0; col < grid[row].length; col++) {
+                this.grid[row].push(grid[row][col]);
             }
         }
     }
@@ -80,7 +86,39 @@ class Matrix {
         }
     }
 
+    changeGridPointValue(row, col, newValue) {
+        try {
+            if (this._notEmptyValue(newValue)) {
+                if (this._isInBounds(row, col)) { this.grid[row][col] = newValue; }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    changeGridRowValue(row, newValue) {
+        try {
+            if (this._rowInBounds(row)) {
+                this.grid[row].forEach((el, idx) => this.changeGridPointValue(row, idx, newValue));
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    changeGridColumnValue(col, newValue) {
+        try {
+            if (this._columnInBounds(col)) {
+                this.grid.forEach((el, idx) => this.changeGridPointValue(idx, col, newValue));
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    //// MATRIX TRAVERSAL
     spiralTraverse() {
+        if (!this.grid.length) return [];
         const result = [];
         let startRow = 0, endRow = this.grid.length - 1;
         let startCol = 0, endCol = this.grid[0].length - 1;
@@ -112,14 +150,43 @@ class Matrix {
         return result;
     }
 
-}
+    zigzagTraverse() {
+        const result = [];
+        let row = 0;
+        let col = 0;
+        let goingDown = true;
 
+        while (!this._isOutOfBounds(row, col)) {
+            result.push(this.grid[row][col]);
 
+            if (goingDown) {
+                if (col === 0 || row === this.rows - 1) {
+                    goingDown = false;
+                    if (row === this.columns - 1) {
+                        col++;
+                    } else {
+                        row++;
+                    }
+                } else {
+                    row++;
+                    col--;
+                }
+            } else {
+                if (row === 0 || col === this.columns - 1) {
+                    goingDown = true;
+                    if (col === this.columns - 1) {
+                        row++;
+                    } else {
+                        col++;
+                    }
+                } else {
+                    row--;
+                    col++;
+                }
+            }
+        }
+        return result;
+    }
 
-
-const matrix = new Matrix();
-matrix.createFromSequence(3, 3, 1, 100)
-console.log(matrix.grid)
-console.log(matrix.changeGridPointValue(2, 2, 1))
-
+}  
 
