@@ -1,11 +1,15 @@
 describe("Matrix", function () {
   afterAll(function () {
-    console.clear();
+    // console.clear();
   })
 
   describe("new Matrix: Instantiate Matrix with constructor", function () {
     const matrix = new Matrix(3, 3, 0);
-    let expected = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    new Node(0,'0_0')
+
+    let expected = [[new Node(0,'0_0'), new Node(0,'0_1'), new Node(0,'0_2')], 
+                    [new Node(0,'1_0'), new Node(0,'1_1'), new Node(0,'1_2')], 
+                    [new Node(0,'2_0'), new Node(0,'2_1'), new Node(0,'2_2')]];
 
     it("new Matrix: rows and columns value", function () {
       expect(matrix.rows).toBe(3);
@@ -68,7 +72,6 @@ describe("Matrix", function () {
       expect(matrix.columns).toBe(3);
     });
     it("createFromGrid: grid lengths", function () {
-
       expect(matrix.grid[0].length).toBe(grid[0].length);
       expect(matrix.grid.length).toBe(grid.length);
     });
@@ -273,7 +276,6 @@ describe("Matrix", function () {
       it("zigzagExpected: with bigger grid from grid", function () {
         expect(zigzagTwo).toEqual(zigzagTwoExpected);
       });
-
       it("zigzagExpected: wiht empty array", function () {
         expect(emptyExpected).toEqual([]);
       });

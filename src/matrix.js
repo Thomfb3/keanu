@@ -5,6 +5,13 @@ class MatrixError extends Error {
     }
 }
 
+class Node {
+    constructor(value, coordinates) {
+        this.value = value === undefined ? null : value;
+        this.coordinates = coordinates === undefined ? null : coordinates;
+    }
+}
+
 class Matrix {
     constructor(rows = 0, columns = 0, filler = 0) {
         this.rows = rows;
@@ -18,7 +25,10 @@ class Matrix {
     //// MATRIX UTILITIES
     _createGrid() {
         for (let row = 0; row < this.rows; row++) {
-            this.grid[row] = new Array(this.columns).fill(this.filler);
+            this.grid.push(new Array());
+            for (let col = 0; col < this.columns; col++) {
+                this.grid[row].push(new Node(this.filler, `${row}_${col}`));
+            }
         }
     }
 
@@ -67,7 +77,7 @@ class Matrix {
         for (let row = 0; row < grid.length; row++) {
             this.grid.push(new Array());
             for (let col = 0; col < grid[row].length; col++) {
-                this.grid[row].push(grid[row][col]);
+                this.grid[row].push(new Node(grid[row][col], `${row}_${col}`));
             }
         }
     }
@@ -75,12 +85,13 @@ class Matrix {
     createFromSequence(rows, columns, startValue, endValue) {
         this.rows = rows;
         this.columns = columns;
-        this._createGrid();
+        //this._createGrid();
         let currentValue = startValue;
 
-        for (let x = 0; x < this.rows; x++) {
-            for (let y = 0; y < this.columns; y++) {
-                this.grid[x][y] = currentValue;
+        for (let row = 0; row < this.rows; row++) {
+            this.grid.push(new Array());
+            for (let col = 0; col < this.columns; col++) {
+                this.grid[row].push(new Node(currentValue, `${row}_${col}`));
                 currentValue = currentValue + 1 > endValue ? startValue : currentValue + 1;
             }
         }
@@ -89,7 +100,7 @@ class Matrix {
     changeGridPointValue(row, col, newValue) {
         try {
             if (this._notEmptyValue(newValue)) {
-                if (this._isInBounds(row, col)) { this.grid[row][col] = newValue; }
+                if (this._isInBounds(row, col)) { this.grid[row][col].value = newValue; }
             }
         } catch (e) {
             console.error(e);
@@ -127,7 +138,6 @@ class Matrix {
         }
         return result;
     }
-
 
     spiralTraverse() {
         if (!this.grid.length) return [];
@@ -202,4 +212,5 @@ class Matrix {
     }
 
 }  
+
 
