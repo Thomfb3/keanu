@@ -5,8 +5,6 @@ describe("Matrix", function () {
 
   describe("new Matrix: Instantiate Matrix with constructor", function () {
     const matrix = new Matrix(3, 3, 0);
-    new Node(0,'0_0')
-
     let expected = [[new Node(0,'0_0'), new Node(0,'0_1'), new Node(0,'0_2')], 
                     [new Node(0,'1_0'), new Node(0,'1_1'), new Node(0,'1_2')], 
                     [new Node(0,'2_0'), new Node(0,'2_1'), new Node(0,'2_2')]];
@@ -64,7 +62,10 @@ describe("Matrix", function () {
 
   describe("createFromGrid: Create Matrix with input grid", function () {
     const matrix = new Matrix();
-    let grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+    let grid = [[0,0,0],[0,0,0],[0,0,0]];
+    let expected = [[new Node(0,'0_0'), new Node(0,'0_1'), new Node(0,'0_2')], 
+                    [new Node(0,'1_0'), new Node(0,'1_1'), new Node(0,'1_2')], 
+                    [new Node(0,'2_0'), new Node(0,'2_1'), new Node(0,'2_2')]];
     matrix.createFromGrid(grid)
 
     it("createFromGrid: rows and columns value", function () {
@@ -76,8 +77,8 @@ describe("Matrix", function () {
       expect(matrix.grid.length).toBe(grid.length);
     });
     it("createFromGrid: grid values", function () {
-      expect(matrix.grid[2][2]).toBe(grid[2][2]);
-      expect(matrix.grid).toEqual(grid);
+      expect(matrix.grid[2][2]).toEqual(expected[2][2]);
+      expect(matrix.grid).toEqual(expected);
     });
 
     const emptyMatrix = new Matrix();
@@ -97,9 +98,12 @@ describe("Matrix", function () {
 
   describe("createFromSequence: Create Matrix from Sequence", function () {
     const matrix = new Matrix();
-    let grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+    let grid = [[new Node(1,'0_0'), new Node(2,'0_1'), new Node(3,'0_2')], 
+                [new Node(4,'1_0'), new Node(5,'1_1'), new Node(6,'1_2')], 
+                [new Node(7,'2_0'), new Node(8,'2_1'), new Node(9,'2_2')]];
     matrix.createFromSequence(3, 3, 1, 9)
-
+    console.log(matrix.grid)
+    console.log(grid)
     it("createFromSequence: rows and columns value", function () {
       expect(matrix.rows).toBe(3);
       expect(matrix.columns).toBe(3);
@@ -110,7 +114,8 @@ describe("Matrix", function () {
     });
     it("createFromSequence: grid values", function () {
       expect(matrix.grid).toEqual(grid);
-      expect(matrix.grid[2][2]).toBe(grid[2][2]);
+      expect(matrix.grid[2][2]).toEqual(grid[2][2]);
+      expect(matrix.grid[2][2].value).toBe(grid[2][2].value);
     });
   });
 
@@ -125,8 +130,8 @@ describe("Matrix", function () {
     matrix.changeGridPointValue(3, 3)
 
     it("changeGridPointValue: simple change", function () {
-      expect(matrix.grid[0][0]).toBe(1);
-      expect(matrix.grid[3][3]).toBe("test");
+      expect(matrix.grid[0][0].value).toBe(1);
+      expect(matrix.grid[3][3].value).toBe("test");
     });
     it("changeGridPointValue: Error - no argument", function () {
       matrix.changeGridPointValue(3, 3)
@@ -146,8 +151,9 @@ describe("Matrix", function () {
     const matrix = new Matrix(3, 3, 0);
     matrix.changeGridRowValue(0, 1);
     matrix.changeGridRowValue(2, "test");
-    let expected = [[1, 1, 1], [0, 0, 0], ["test", "test", "test"]];
-
+    let expected = [[new Node(1,'0_0'), new Node(1,'0_1'), new Node(1,'0_2')], 
+                    [new Node(0,'1_0'), new Node(0,'1_1'), new Node(0,'1_2')], 
+                    [new Node("test",'2_0'), new Node("test",'2_1'), new Node("test",'2_2')]];
 
     it("changeGridRowValue: simple change", function () {
       expect(matrix.grid).toEqual(expected);
@@ -170,7 +176,9 @@ describe("Matrix", function () {
       const matrix = new Matrix(3, 3, 0);
       matrix.changeGridColumnValue(0, 1);
       matrix.changeGridColumnValue(2, "test");
-      let expected = [[1, 0, "test"], [1, 0, "test"], [1, 0, "test"]];
+      let expected = [[new Node(1,'0_0'), new Node(0,'0_1'), new Node("test",'0_2')], 
+                      [new Node(1,'1_0'), new Node(0,'1_1'), new Node("test",'1_2')], 
+                      [new Node(1,'2_0'), new Node(0,'2_1'), new Node("test",'2_2')]];
 
       it("changeGridColumnValue: simple change", function () {
         expect(matrix.grid).toEqual(expected);
@@ -189,8 +197,9 @@ describe("Matrix", function () {
       const matrix = new Matrix();
       matrix.createFromSequence(3, 3, 1, 9)
       let straight = matrix.straightTraverse();
-      let straightExpected = [1,2,3,4,5,6,7,8,9];
-
+      let straightExpected = [new Node(1,'0_0'), new Node(2,'0_1'), new Node(3,'0_2'),
+                              new Node(4,'1_0'), new Node(5,'1_1'), new Node(6,'1_2'),
+                              new Node(7,'2_0'), new Node(8,'2_1'), new Node(9,'2_2')];
       let grid = [
         [1, 2, 3, 4],
         [5, 6, 7, 8],
@@ -201,8 +210,12 @@ describe("Matrix", function () {
       const matrixTwo = new Matrix();
       matrixTwo.createFromGrid(grid)
       let matrixFromGrid = matrixTwo.straightTraverse()
-      let matrixFromGridExpected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
+      let matrixFromGridExpected = [new Node(1,'0_0'), new Node(2,'0_1'), new Node(3,'0_2'), new Node(4,'0_3'),
+                                    new Node(5,'1_0'), new Node(6,'1_1'), new Node(7,'1_2'), new Node(8,'1_3'),
+                                    new Node(9,'2_0'), new Node(10,'2_1'), new Node(11,'2_2'), new Node(12,'2_3'),
+                                    new Node(13,'3_0'), new Node(14,'3_1'), new Node(15,'3_2'), new Node(16,'3_3')];
+      
       const empty = new Matrix();
       let emptyExpected = empty.spiralTraverse();
 
@@ -221,19 +234,23 @@ describe("Matrix", function () {
       const matrix = new Matrix();
       matrix.createFromSequence(3, 3, 1, 9)
       let spiral = matrix.spiralTraverse();
-      let spiralExpected = [1,2,3,6,9,8,7,4,5]
+      let spiralExpected = [new Node(1,'0_0'), new Node(2,'0_1'), new Node(3,'0_2'),
+                            new Node(6,'1_2'), new Node(9,'2_2'), new Node(8,'2_1'),
+                            new Node(7,'2_0'), new Node(4,'1_0'), new Node(5,'1_1')];
 
       let grid = [
         [1, 2, 3, 4],
-        [12, 13, 14, 5],
-        [11, 16, 15, 6],
-        [10, 9, 8, 7]
-      ];
-
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]
+      ]
       const matrixTwo = new Matrix();
       matrixTwo.createFromGrid(grid)
-      let matrixFromGrid = matrixTwo.spiralTraverse()
-      let matrixFromGridExpected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+      let spiralFromGrid = matrixTwo.spiralTraverse()
+      let spiralFromGridExpected = [new Node(1,'0_0'), new Node(2,'0_1'), new Node(3,'0_2'), new Node(4,'0_3'),
+                                    new Node(8,'1_3'), new Node(12,'2_3'), new Node(16,'3_3'), new Node(15,'3_2'),
+                                    new Node(14,'3_1'), new Node(13,'3_0'), new Node(9,'2_0'), new Node(5,'1_0'),
+                                    new Node(6,'1_1'), new Node(7,'1_2'), new Node(11,'2_2'), new Node(10,'2_1')];
 
       const empty = new Matrix();
       let emptyExpected = empty.spiralTraverse();
@@ -242,7 +259,7 @@ describe("Matrix", function () {
         expect(spiral).toEqual(spiralExpected);
       });
       it("spiralTraverse: with bigger grid from grid", function () {
-        expect(matrixFromGrid).toEqual(matrixFromGridExpected);
+        expect(spiralFromGrid).toEqual(spiralFromGridExpected);
       });
       it("spiralTraverse: wiht empty array", function () {
         expect(emptyExpected).toEqual([]);
@@ -253,19 +270,24 @@ describe("Matrix", function () {
       const matrix = new Matrix();
       matrix.createFromSequence(3, 3, 1, 9)
       let zigzag = matrix.zigzagTraverse();
-      let zigzagExpected = [1, 4, 2, 3, 5, 7, 8, 6, 9];
+      let zigzagExpected = [new Node(1,'0_0'), new Node(4,'1_0'), new Node(2,'0_1'),
+                            new Node(3,'0_2'), new Node(5,'1_1'), new Node(7,'2_0'),
+                            new Node(8,'2_1'), new Node(6,'1_2'), new Node(9,'2_2')];
 
       let grid = [
-        [1, 3, 4, 10],
-        [2, 5, 9, 11],
-        [6, 8, 12, 15],
-        [7, 13, 14, 16]
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]
       ]
 
       const matrixTwo = new Matrix();
       matrixTwo.createFromGrid(grid)
       let zigzagTwo = matrixTwo.zigzagTraverse();
-      let zigzagTwoExpected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+      let zigzagTwoExpected = [new Node(1,'0_0'), new Node(5,'1_0'), new Node(2,'0_1'), new Node(3,'0_2'),
+                              new Node(6,'1_1'), new Node(9,'2_0'), new Node(13,'3_0'), new Node(10,'2_1'),
+                              new Node(7,'1_2'), new Node(4,'0_3'), new Node(8,'1_3'), new Node(11,'2_2'),
+                              new Node(14,'3_1'), new Node(15,'3_2'), new Node(12,'2_3'), new Node(16,'3_3')];
 
       const empty = new Matrix();
       let emptyExpected = empty.zigzagTraverse();
